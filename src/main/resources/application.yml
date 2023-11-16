@@ -1,0 +1,16 @@
+server:
+  port: 8000
+spring:
+  config:
+    activate:
+      on-profile: local,dev,prod
+  application:
+    name: apigateway-service
+  cloud:
+    config:
+      name: apigateway-service
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, refresh, busrefresh

@@ -1,0 +1,20 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: optional:configserver:http://config-service:8888
+  # rabbitmq settings
+  rabbitmq:
+    host: rabbitmq-service
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
