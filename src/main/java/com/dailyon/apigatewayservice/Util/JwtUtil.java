@@ -39,7 +39,7 @@ public class JwtUtil {
     public void addJwtPayloadHeaders(ServerHttpRequest request, Claims claims) {
         Integer userId = getUserId(claims);
         String userRole = getUserRole(claims);
-        ServerHttpRequest mutatedRequest = request.mutate()
+        request.mutate()
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .header("memberId",String.valueOf(userId))
                 .header("memberRole",String.valueOf(userRole))

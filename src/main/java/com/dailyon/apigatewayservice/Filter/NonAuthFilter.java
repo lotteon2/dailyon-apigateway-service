@@ -17,21 +17,17 @@ import reactor.core.publisher.Mono;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Slf4j
-@Component
-public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
+public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Config> {
     private final JwtUtil jwtUtil;
 
     public static class Config {
 
     }
 
-    public AuthFilter(JwtUtil jwtUtil) {
+    public NonAuthFilter(JwtUtil jwtUtil) {
         super(Config.class);
         this.jwtUtil = jwtUtil;
     }
@@ -42,25 +38,18 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-            if(!containsAuthorization(request)) {
-                return onError(response, HttpStatus.UNAUTHORIZED);
+            if(containsAuthorization(request)) {
+                MultiValueMap<String, HttpCookie> cookies = request.getCookies();
+                List<HttpCookie> userInfoCookies = cookies.get("userInfo");
+
+                List<String> jwtValues = userInfoCookies.stream()
+                        .map(HttpCookie::getValue)
+                        .collect(Collectors.toList());
+
+                Claims claims = jwtUtil.parse(jwtValues.get(0));
+
+                jwtUtil.addJwtPayloadHeaders(request, claims);
             }
-            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
-            List<HttpCookie> userInfoCookies = cookies.get("userInfo");
-
-
-            List<String> jwtValues = userInfoCookies.stream()
-                    .map(HttpCookie::getValue)
-                    .collect(Collectors.toList());
-
-            Claims claims = jwtUtil.parse(jwtValues.get(0));
-
-
-            if(isExpired(claims)) {
-                return onError(response, HttpStatus.UNAUTHORIZED);
-            }
-
-            jwtUtil.addJwtPayloadHeaders(request, claims);
 
             return chain.filter(exchange);
         });
@@ -90,14 +79,4 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         return cookieHeader != null && cookieHeader.contains("userInfo");
     }
 
-    //TODO: catch로 만료 토큰 잡아야함
-    private boolean isExpired(Claims claims) {
-        return claims.getExpiration().getTime() < System.currentTimeMillis();
-    }
-
-
-    private Mono<Void> onError(ServerHttpResponse response, HttpStatus status) {
-        response.setStatusCode(status);
-        return response.setComplete();
-    }
 }
