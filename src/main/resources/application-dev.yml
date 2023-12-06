@@ -3,6 +3,24 @@ spring:
     activate:
       on-profile: dev
     import: optional:configserver:http://config-service:8888
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allow-credentials: true
+            allowedHeaders: "*"
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - PATCH
+              - OPTIONS
+
   # rabbitmq settings
   rabbitmq:
     host: rabbitmq-service
