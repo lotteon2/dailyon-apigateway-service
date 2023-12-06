@@ -1,17 +1,110 @@
 spring:
+  application:
+    name: gateway-service
+  main:
+    web-application-type: reactive
   config:
     activate:
       on-profile: local
     import: optional:configserver:http://127.0.0.1:8888
-  # rabbitmq settings
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allow-credentials: true
+            allowedHeaders: "*"
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - PATCH
+              - OPTIONS
+      routes:
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/**
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /${segment}
+            - AuthFilter
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/**
+          filters:
+            - RewritePath=/auth-service/(?<segment>.*), /${segment}
+
+        - id: NOTIFICATION-SERVICE
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification-service/**
+          filters:
+            - RewritePath=/notification-service/(?<segment>.*), /${segment}
+
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE
+          predicates:
+            - Path=/auction-service/**
+          filters:
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+
+        - id: PROMOTION-SERVICE
+          uri: lb://PROMOTION-SERVICE
+          predicates:
+            - Path=/promotion-service/**
+          filters:
+            - RewritePath=/promotion-service/(?<segment>.*), /${segment}
+
+        - id: WISH-CART-SERVICE
+          uri: lb://WISH-CART-SERVICE
+          predicates:
+            - Path=/wish-cart-service/**
+          filters:
+            - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
+
+        - id: REVIEW-SERVICE
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/review-service/**
+          filters:
+            - RewritePath=/review-service/(?<segment>.*), /${segment}
+
+        - id: SNS-SERVICE
+          uri: lb://SNS-SERVICE
+          predicates:
+            - Path=/sns-service/**
+          filters:
+            - RewritePath=/sns-service/(?<segment>.*), /${segment}
+
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - RewritePath=/order-service/(?<segment>.*), /${segment}
+
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - RewritePath=/payment-service/(?<segment>.*), /${segment}
+
+rabbitmq:
+  host: 127.0.0.1
+  port: 5672
+  username: guest
+  password: guest
 
 eureka:
   client:
+    enable: false
     register-with-eureka: true
     fetch-registry: true
     service-url:
