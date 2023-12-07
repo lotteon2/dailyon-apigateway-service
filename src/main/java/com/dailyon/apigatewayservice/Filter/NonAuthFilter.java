@@ -37,6 +37,7 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
+            log.info("NonAuthFilter start");
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 

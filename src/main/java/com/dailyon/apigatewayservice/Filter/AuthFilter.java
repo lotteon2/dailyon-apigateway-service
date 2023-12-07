@@ -39,12 +39,13 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
+            log.info("AuthFilter start");
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-            if(!containsAuthorization(request)) {
-                return onError(response, HttpStatus.UNAUTHORIZED);
-            }
+//            if(!containsAuthorization(request)) {
+//                return onError(response, HttpStatus.UNAUTHORIZED);
+//            }
             MultiValueMap<String, HttpCookie> cookies = request.getCookies();
             List<HttpCookie> userInfoCookies = cookies.get("userInfo");
 
@@ -55,10 +56,11 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             Claims claims = jwtUtil.parse(jwtValues.get(0));
 
-
+            log.info("JWT Token Validation start");
             if(isExpired(claims)) {
                 return onError(response, HttpStatus.UNAUTHORIZED);
             }
+            log.info("Successful JWT Token Validation");
 
             jwtUtil.addJwtPayloadHeaders(request, claims);
 
