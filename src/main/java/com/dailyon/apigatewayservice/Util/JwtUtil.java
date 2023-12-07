@@ -37,6 +37,7 @@ public class JwtUtil {
         return claims.get("userRole", String.class);
     }
     public void addJwtPayloadHeaders(ServerHttpRequest request, Claims claims) {
+        System.out.println("페이로드 헤더 실행");
         Integer userId = getUserId(claims);
         String userRole = getUserRole(claims);
         request.mutate()

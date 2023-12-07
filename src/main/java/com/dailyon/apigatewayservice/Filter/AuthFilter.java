@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpHeaders;
 
 @Slf4j
 @Component
@@ -43,54 +44,30 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-//            if(!containsAuthorization(request)) {
-//                return onError(response, HttpStatus.UNAUTHORIZED);
-//            }
-            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
-            List<HttpCookie> userInfoCookies = cookies.get("userInfo");
+            HttpHeaders headers = request.getHeaders();
+            String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
 
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
-            List<String> jwtValues = userInfoCookies.stream()
-                    .map(HttpCookie::getValue)
-                    .collect(Collectors.toList());
+                String token = authorizationHeader.substring(7);
+                Claims claims = jwtUtil.parse(token);
 
-            Claims claims = jwtUtil.parse(jwtValues.get(0));
+                log.info(String.valueOf(claims));
 
-            log.info("JWT Token Validation start");
-            if(isExpired(claims)) {
-                return onError(response, HttpStatus.UNAUTHORIZED);
+                if (isExpired(claims)) {
+                    return onError(response, HttpStatus.UNAUTHORIZED);
+                }
+                log.info("Successful JWT Token Validation");
+
+                jwtUtil.addJwtPayloadHeaders(request, claims);
+
+                return chain.filter(exchange);
             }
-            log.info("Successful JWT Token Validation");
 
-            jwtUtil.addJwtPayloadHeaders(request, claims);
-
-            return chain.filter(exchange);
+            return onError(response, HttpStatus.UNAUTHORIZED);
         });
     }
 
-    private boolean containsAuthorization(ServerHttpRequest request) {
-        if (request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-            return true;
-        }
-        HttpHeaders headers = request.getHeaders();
-
-        List<String> cookieHeaders = headers.get(HttpHeaders.COOKIE);
-
-
-        request.getCookies().containsKey("userInfo");
-
-        if (cookieHeaders != null) {
-            for (String cookieHeader : cookieHeaders) {
-                if (cookieHeader.contains("userInfo")) {;
-                    return true;
-                }
-            }
-        }
-
-        String cookieHeader = request.getHeaders().getFirst(HttpHeaders.COOKIE);
-
-        return cookieHeader != null && cookieHeader.contains("userInfo");
-    }
 
     //TODO: catch로 만료 토큰 잡아야함
     private boolean isExpired(Claims claims) {

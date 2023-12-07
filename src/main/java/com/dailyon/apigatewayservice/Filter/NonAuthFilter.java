@@ -35,51 +35,42 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
     }
 
     @Override
-    public GatewayFilter apply(Config config) {
+    public GatewayFilter apply(NonAuthFilter.Config config) {
         return ((exchange, chain) -> {
-            log.info("NonAuthFilter start");
+            log.info("AuthFilter start");
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-            if(containsAuthorization(request)) {
-                MultiValueMap<String, HttpCookie> cookies = request.getCookies();
-                List<HttpCookie> userInfoCookies = cookies.get("userInfo");
+            HttpHeaders headers = request.getHeaders();
+            String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
 
-                List<String> jwtValues = userInfoCookies.stream()
-                        .map(HttpCookie::getValue)
-                        .collect(Collectors.toList());
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
-                Claims claims = jwtUtil.parse(jwtValues.get(0));
+                String token = authorizationHeader.substring(7);
+                Claims claims = jwtUtil.parse(token);
+
+                log.info(String.valueOf(claims));
+
+                if (isExpired(claims)) {
+                    return onError(response, HttpStatus.UNAUTHORIZED);
+                }
+                log.info("Successful JWT Token Validation");
 
                 jwtUtil.addJwtPayloadHeaders(request, claims);
+
+                return chain.filter(exchange);
             }
 
             return chain.filter(exchange);
         });
     }
 
-    private boolean containsAuthorization(ServerHttpRequest request) {
-        if (request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-            return true;
-        }
-        HttpHeaders headers = request.getHeaders();
-
-        List<String> cookieHeaders = headers.get(HttpHeaders.COOKIE);
-
-
-        request.getCookies().containsKey("userInfo");
-
-        if (cookieHeaders != null) {
-            for (String cookieHeader : cookieHeaders) {
-                if (cookieHeader.contains("userInfo")) {;
-                    return true;
-                }
-            }
-        }
-
-        String cookieHeader = request.getHeaders().getFirst(HttpHeaders.COOKIE);
-
-        return cookieHeader != null && cookieHeader.contains("userInfo");
+    private boolean isExpired(Claims claims) {
+        return claims.getExpiration().getTime() < System.currentTimeMillis();
     }
 
+    private Mono<Void> onError(ServerHttpResponse response, HttpStatus status) {
+        response.setStatusCode(status);
+        return response.setComplete();
+    }
 }
