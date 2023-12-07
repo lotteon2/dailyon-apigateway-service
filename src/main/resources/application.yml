@@ -154,7 +154,7 @@ spring:
           predicates:
             - Path=/payment-service/actuator/**
           filters:
-            - RewritePath=/payment-service-service/(?<segment>.*), /${segment}
+            - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
         ## Notification Service
@@ -171,7 +171,7 @@ spring:
           predicates:
             - Path=/notification-service/actuator/**
           filters:
-            - RewritePath=/notification-service-service/(?<segment>.*), /${segment}
+            - RewritePath=/notification-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
 
