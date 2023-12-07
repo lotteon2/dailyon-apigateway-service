@@ -11,37 +11,84 @@ spring:
       name: apigateway-service
     gateway:
       routes:
-        - id: member-service
+        ## Member Service
+        - id: MEMBER-SERVICE
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/**
           filters:
             - RewritePath=/member-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: MEMBER-SERVICE
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/actuator/**
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
-        - id: auth-service
+        ## Auth Service
+        - id: AUTH-SERVICE
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
+        # NonAuth
+        - id: AUTH-SERVICE
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/actuator/**
+          filters:
+            - RewritePath=/auth-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
-        - id : product-service
+        ## Product Service
+        - id : PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
+            - AuthFilter
+        # NonAuth
+        - id : PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/categories/{variable:.*},
+              /product-service/products,
+              /product-service/products/search,
+              /product-service/categories/breadcrumb/{variable:.*},
+              /product-service/products/id/{variable:.*},
+              /product-service/products/code/{variable:.*},
+              /product-service/actuator/**
+            - Method=GET, OPTIONS, HEAD
+          filters:
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
+        ## Review Service
         - id: REVIEW-SERVICE
           uri: lb://REVIEW-SERVICE
           predicates:
-            - Path=/review-service/**
+            - Path=/review-service/reviews/**
+          filters:
+            - RewritePath=/review-service/(?<segment>.*), /${segment}'
+            - AuthFilter
+        # NonAuth
+        - id: REVIEW-SERVICE
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/review-service/reviews/{variable:.*},
+                   /review-service/reviews,
+                   /review-service/actuator/**
+            - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/review-service/(?<segment>.*), /${segment}'
             - NonAuthFilter
 
+        ## Wish-Cart Service
         - id: WISH-CART-SERVICE
           uri: lb://WISH-CART-SERVICE
           predicates:
@@ -49,7 +96,16 @@ spring:
           filters:
             - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: WISH-CART-SERVICE
+          uri: lb://WISH-CART-SERVICE
+          predicates:
+            - Path=/wish-cart-service/actuator/**
+          filters:
+            - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
+        ## Auction Service
         - id: AUCTION-SERVICE
           uri: lb://AUCTION-SERVICE
           predicates:
@@ -57,7 +113,16 @@ spring:
           filters:
             - RewritePath=/auction-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE
+          predicates:
+            - Path=/auction-service/actuator/**
+          filters:
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
+        ## Order Service
         - id: ORDER-SERVICE
           uri: lb://ORDER-SERVICE
           predicates:
@@ -65,7 +130,17 @@ spring:
           filters:
             - RewritePath=/order-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/actuator/**
+          filters:
+            - RewritePath=/order-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
+
+        ## Payment Service
         - id: PAYMENT-SERVICE
           uri: lb://PAYMENT-SERVICE
           predicates:
@@ -73,15 +148,16 @@ spring:
           filters:
             - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - AuthFilter
-
-        - id: SNS-SERVICE
-          uri: lb://SNS-SERVICE
+        # NonAuth
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
           predicates:
-            - Path=/sns-service/**
+            - Path=/payment-service/actuator/**
           filters:
-            - RewritePath=/sns-service/(?<segment>.*), /${segment}
+            - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
+        ## Notification Service
         - id: NOTIFICATION-SERVICE
           uri: lb://NOTIFICATION-SERVICE
           predicates:
@@ -89,19 +165,64 @@ spring:
           filters:
             - RewritePath=/notification-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: NOTIFICATION-SERVICE
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification-service/actuator/**
+          filters:
+            - RewritePath=/notification-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
+
+        ## Sns Service
+        - id: SNS-SERVICE
+          uri: lb://SNS-SERVICE
+          predicates:
+            - Path=/sns-service/**
+          filters:
+            - RewritePath=/sns-service/(?<segment>.*), /${segment}
+            - AuthFilter
+        # NonAuth
+        - id: SNS-SERVICE
+          uri: lb://SNS-SERVICE
+          predicates:
+            - Path=/sns-service/posts,
+              /sns-service/posts/{variable:.*},
+              /sns-service/posts/search,
+              /sns-service/posts/{variable:.*}/comments,
+              /sns-service/members/{variable:.*},
+              /sns-service/member-posts,
+              /sns-service/top4-posts,
+              /sns-service/posts/{variable:.*}//view-count,
+              /sns-service/actuator/**
+            - Method=GET, PUT, OPTIONS, HEAD
+          filters:
+            - RewritePath=/sns-service/(?<segment>.*), /${segment}'
+            - NonAuthFilter
+
+        ## Promotion Service
         - id: PROMOTION-SERVICE
           uri: lb://PROMOTION-SERVICE
           predicates:
             - Path=/promotion-service/**
           filters:
             - RewritePath=/promotion-service/(?<segment>.*), /${segment}
+            - AuthFilter
+        # NonAuth
+        - id: PROMOTION-SERVICE
+          uri: lb://PROMOTION-SERVICE
+          predicates:
+            - Path=/promotion-service/coupons/{variable:.*},
+                   /promotion-service/coupons,
+                   /promotion-service/coupons/single-product,
+                   /promotion-service/coupons/multiple-products,
+                   /promotion-service/raffles,
+                   /promotion-service/actuator/**
+            - Method=GET, OPTIONS, HEAD
+          filters:
+            - RewritePath=/promotion-service/(?<segment>.*), /${segment}'
             - NonAuthFilter
-
-
-
-
-
 
 management:
   endpoints:

@@ -20,6 +20,8 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
+@Component
 public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Config> {
     private final JwtUtil jwtUtil;
 
