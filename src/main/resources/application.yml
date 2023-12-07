@@ -136,7 +136,7 @@ spring:
           predicates:
             - Path=/order-service/actuator/**
           filters:
-            - RewritePath=/order-service-service/(?<segment>.*), /${segment}
+            - RewritePath=/order-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
 
