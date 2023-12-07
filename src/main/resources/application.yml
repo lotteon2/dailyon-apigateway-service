@@ -12,24 +12,40 @@ spring:
     gateway:
       routes:
         ## Member Service
-        - id: member-service
+        - id: MEMBER-SERVICE
           uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member-service/**
           filters:
             - RewritePath=/member-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: MEMBER-SERVICE
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/actuator/**
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
         ## Auth Service
-        - id: auth-service
+        - id: AUTH-SERVICE
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth-service/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
+        # NonAuth
+        - id: AUTH-SERVICE
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth-service/actuator/**
+          filters:
+            - RewritePath=/auth-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
         ## Product Service
-        - id : product-service
+        - id : PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/**
@@ -37,7 +53,7 @@ spring:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
             - AuthFilter
         # NonAuth
-        - id : product-service
+        - id : PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/categories/{variable:.*},
@@ -80,6 +96,14 @@ spring:
           filters:
             - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: WISH-CART-SERVICE
+          uri: lb://WISH-CART-SERVICE
+          predicates:
+            - Path=/wish-cart-service/actuator/**
+          filters:
+            - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
         ## Auction Service
         - id: AUCTION-SERVICE
@@ -89,6 +113,14 @@ spring:
           filters:
             - RewritePath=/auction-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE
+          predicates:
+            - Path=/auction-service/actuator/**
+          filters:
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
         ## Order Service
         - id: ORDER-SERVICE
@@ -98,6 +130,15 @@ spring:
           filters:
             - RewritePath=/order-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/actuator/**
+          filters:
+            - RewritePath=/order-service-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
+
 
         ## Payment Service
         - id: PAYMENT-SERVICE
@@ -107,6 +148,14 @@ spring:
           filters:
             - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/actuator/**
+          filters:
+            - RewritePath=/payment-service-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
         ## Notification Service
         - id: NOTIFICATION-SERVICE
@@ -116,6 +165,15 @@ spring:
           filters:
             - RewritePath=/notification-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: NOTIFICATION-SERVICE
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification-service/actuator/**
+          filters:
+            - RewritePath=/notification-service-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
+
 
         ## Sns Service
         - id: SNS-SERVICE
