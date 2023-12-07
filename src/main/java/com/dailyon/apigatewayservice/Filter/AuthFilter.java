@@ -46,11 +46,6 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 //            if(!containsAuthorization(request)) {
 //                return onError(response, HttpStatus.UNAUTHORIZED);
 //            }
-            if(request.getHeaders().containsKey("Set-Cookie")) {
-                log.info("have cookie");
-                String jwtToken = request.getHeaders().getFirst("Set-Cookie");
-                log.info("JWT Token={}", jwtToken);
-            }
             MultiValueMap<String, HttpCookie> cookies = request.getCookies();
             List<HttpCookie> userInfoCookies = cookies.get("userInfo");
 
