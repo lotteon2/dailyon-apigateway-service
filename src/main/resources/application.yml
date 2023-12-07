@@ -41,8 +41,8 @@ spring:
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/categories/{variable:.*},
-              /product-service/products?brand={variable:.*}&category={variable:.*}&gender{variable:.*}&page={variable:.*}&size={variable:.*},
-              /product-service/products/search?query={variable:.*}&lastId={variable:.*},
+              /product-service/products,
+              /product-service/products/search,
               /product-service/categories/breadcrumb/{variable:.*},
               /product-service/products/id/{variable:.*},
               /product-service/products/code/{variable:.*}
