@@ -45,8 +45,9 @@ spring:
               /product-service/products/search,
               /product-service/categories/breadcrumb/{variable:.*},
               /product-service/products/id/{variable:.*},
-              /product-service/products/code/{variable:.*}
-            - Method=GET
+              /product-service/products/code/{variable:.*},
+              /product-service/actuator/**
+            - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/product-service/(?<segment>.*), /${segment}
             - NonAuthFilter
@@ -64,8 +65,9 @@ spring:
           uri: lb://REVIEW-SERVICE
           predicates:
             - Path=/review-service/reviews/{variable:.*},
-                   /review-service/reviews
-            - Method=GET
+                   /review-service/reviews,
+                   /review-service/actuator/**
+            - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/review-service/(?<segment>.*), /${segment}'
             - NonAuthFilter
@@ -106,7 +108,6 @@ spring:
             - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - AuthFilter
 
-
         ## Notification Service
         - id: NOTIFICATION-SERVICE
           uri: lb://NOTIFICATION-SERVICE
@@ -132,11 +133,12 @@ spring:
               /sns-service/posts/{variable:.*},
               /sns-service/posts/search,
               /sns-service/posts/{variable:.*}/comments,
-              /sns-service/members/,
+              /sns-service/members/{variable:.*},
               /sns-service/member-posts,
               /sns-service/top4-posts,
-              /sns-service/posts/{variable:.*}//view-count
-            - Method=GET, PUT
+              /sns-service/posts/{variable:.*}//view-count,
+              /sns-service/actuator/**
+            - Method=GET, PUT, OPTIONS, HEAD
           filters:
             - RewritePath=/sns-service/(?<segment>.*), /${segment}'
             - NonAuthFilter
@@ -154,15 +156,15 @@ spring:
           uri: lb://PROMOTION-SERVICE
           predicates:
             - Path=/promotion-service/coupons/{variable:.*},
-                   /promotion-service/coupons
-            - Method=GET
+                   /promotion-service/coupons,
+                   /promotion-service/coupons/single-product,
+                   /promotion-service/coupons/multiple-products,
+                   /promotion-service/raffles,
+                   /promotion-service/actuator/**
+            - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/promotion-service/(?<segment>.*), /${segment}'
             - NonAuthFilter
-
-
-
-
 
 management:
   endpoints:
