@@ -59,6 +59,10 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
                 jwtUtil.addJwtPayloadHeaders(request, claims);
 
                 return chain.filter(exchange);
+            } else {
+                String token = authorizationHeader.substring(7);
+                Claims claims = jwtUtil.parse(token);
+                jwtUtil.addJwtPayloadHeadersForNonAuthService(request,claims);
             }
 
             return chain.filter(exchange);

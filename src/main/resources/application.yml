@@ -48,20 +48,21 @@ spring:
         - id : PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
-            - Path=/product-service/**
+            - Path=/product-service/admin/**
           filters:
             - RewritePath=/auth-service/(?<segment>.*), /${segment}
-            - AuthFilter
+            - NonAuthFilter
         # NonAuth
         - id : PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/categories/{variable:.*},
+              /product-service/products/id/{variable:.*},
               /product-service/products,
               /product-service/products/search,
               /product-service/categories/breadcrumb/{variable:.*},
-              /product-service/products/id/{variable:.*},
               /product-service/products/code/{variable:.*},
+              /product-service/**,
               /product-service/actuator/**
             - Method=GET, OPTIONS, HEAD
           filters:
@@ -74,7 +75,7 @@ spring:
           predicates:
             - Path=/review-service/reviews/**
           filters:
-            - RewritePath=/review-service/(?<segment>.*), /${segment}'
+            - RewritePath=/review-service/(?<segment>.*), /${segment}
             - AuthFilter
         # NonAuth
         - id: REVIEW-SERVICE
@@ -85,7 +86,7 @@ spring:
                    /review-service/actuator/**
             - Method=GET, OPTIONS, HEAD
           filters:
-            - RewritePath=/review-service/(?<segment>.*), /${segment}'
+            - RewritePath=/review-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
         ## Wish-Cart Service
@@ -187,18 +188,19 @@ spring:
         - id: SNS-SERVICE
           uri: lb://SNS-SERVICE
           predicates:
-            - Path=/sns-service/posts,
-              /sns-service/posts/{variable:.*},
-              /sns-service/posts/search,
+            - Path=
+              /sns-service/posts/{variable:.*}/view-count,
               /sns-service/posts/{variable:.*}/comments,
+              /sns-service/posts/{variable:.*},
+              /sns-service/posts,
+              /sns-service/posts/search,
               /sns-service/members/{variable:.*},
               /sns-service/member-posts,
               /sns-service/top4-posts,
-              /sns-service/posts/{variable:.*}//view-count,
               /sns-service/actuator/**
             - Method=GET, PUT, OPTIONS, HEAD
           filters:
-            - RewritePath=/sns-service/(?<segment>.*), /${segment}'
+            - RewritePath=/sns-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
         ## Promotion Service
@@ -214,14 +216,14 @@ spring:
           uri: lb://PROMOTION-SERVICE
           predicates:
             - Path=/promotion-service/coupons/{variable:.*},
-                   /promotion-service/coupons,
                    /promotion-service/coupons/single-product,
                    /promotion-service/coupons/multiple-products,
+                   /promotion-service/coupons,
                    /promotion-service/raffles,
                    /promotion-service/actuator/**
             - Method=GET, OPTIONS, HEAD
           filters:
-            - RewritePath=/promotion-service/(?<segment>.*), /${segment}'
+            - RewritePath=/promotion-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
 management:

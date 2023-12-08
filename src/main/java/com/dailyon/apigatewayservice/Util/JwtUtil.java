@@ -37,21 +37,21 @@ public class JwtUtil {
         return claims.get("userRole", String.class);
     }
     public void addJwtPayloadHeaders(ServerHttpRequest request, Claims claims) {
-        System.out.println("페이로드 헤더 실행");
+
         Integer userId = getUserId(claims);
         String userRole = getUserRole(claims);
         request.mutate()
                 .header("Content-Type", "application/json;charset=UTF-8")
                 .header("memberId",String.valueOf(userId))
-                .header("memberRole",String.valueOf(userRole))
+                .header("role",String.valueOf(userRole))
                 .build();
     }
 
-    public void addJwtPayloadHeadersForProductService(ServerHttpRequest request, Claims claims) {
+    public void addJwtPayloadHeadersForNonAuthService(ServerHttpRequest request, Claims claims) {
         Integer userId = (claims != null) ? getUserId(claims) : null;
         request.mutate()
                 .header("Content-Type", "application/json;charset=UTF-8")
-                .header("userId", String.valueOf(userId) == null ? null : String.valueOf(userId))
+                .header("memberId", String.valueOf(userId) == null ? null : String.valueOf(userId))
                 .build();
     }
 }
