@@ -46,6 +46,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+            log.info("Auth Header={}", authorizationHeader);
 
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 

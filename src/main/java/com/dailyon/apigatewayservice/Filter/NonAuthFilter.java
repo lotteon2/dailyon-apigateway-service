@@ -37,12 +37,13 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
     @Override
     public GatewayFilter apply(NonAuthFilter.Config config) {
         return ((exchange, chain) -> {
-            log.info("AuthFilter start");
+            log.info("NonAuthFilter start");
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+            log.info("Auth Header={}", authorizationHeader);
 
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
