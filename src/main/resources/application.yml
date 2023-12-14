@@ -50,7 +50,7 @@ spring:
           predicates:
             - Path=/product-service/admin/**
           filters:
-            - RewritePath=/auth-service/(?<segment>.*), /${segment}
+            - RewritePath=/product-service/(?<segment>.*), /${segment}
             - AuthFilter
         # NonAuth
         - id : PRODUCT-SERVICE
