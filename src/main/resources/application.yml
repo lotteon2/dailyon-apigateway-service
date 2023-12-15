@@ -153,7 +153,8 @@ spring:
         - id: PAYMENT-SERVICE
           uri: lb://PAYMENT-SERVICE
           predicates:
-            - Path=/payment-service/actuator/**
+            - Path=/payment-service/actuator/**,
+                   /payment-service/payments/approve/{variable:.*}
           filters:
             - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - NonAuthFilter
