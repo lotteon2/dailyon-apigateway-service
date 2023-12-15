@@ -141,6 +141,16 @@ spring:
             - NonAuthFilter
 
 
+        # NonAuth
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/actuator/**,
+                   /payment-service/payments/approve/**
+            - Method=GET, OPTIONS, HEAD
+          filters:
+            - RewritePath=/payment-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
         ## Payment Service
         - id: PAYMENT-SERVICE
           uri: lb://PAYMENT-SERVICE
@@ -149,15 +159,6 @@ spring:
           filters:
             - RewritePath=/payment-service/(?<segment>.*), /${segment}
             - AuthFilter
-        # NonAuth
-        - id: PAYMENT-SERVICE
-          uri: lb://PAYMENT-SERVICE
-          predicates:
-            - Path=/payment-service/actuator/**,
-                   /payment-service/payments/approve/{variable:.*}
-          filters:
-            - RewritePath=/payment-service/(?<segment>.*), /${segment}
-            - NonAuthFilter
 
         ## Notification Service
         - id: NOTIFICATION-SERVICE
@@ -177,14 +178,6 @@ spring:
             - NonAuthFilter
 
 
-        ## Sns Service
-        - id: SNS-SERVICE
-          uri: lb://SNS-SERVICE
-          predicates:
-            - Path=/sns-service/**
-          filters:
-            - RewritePath=/sns-service/(?<segment>.*), /${segment}
-            - AuthFilter
         # NonAuth
         - id: SNS-SERVICE
           uri: lb://SNS-SERVICE
@@ -203,6 +196,14 @@ spring:
           filters:
             - RewritePath=/sns-service/(?<segment>.*), /${segment}
             - NonAuthFilter
+        ## Sns Service
+        - id: SNS-SERVICE
+          uri: lb://SNS-SERVICE
+          predicates:
+            - Path=/sns-service/**
+          filters:
+            - RewritePath=/sns-service/(?<segment>.*), /${segment}
+            - AuthFilter
 
         ## Promotion Service
         - id: PROMOTION-SERVICE
