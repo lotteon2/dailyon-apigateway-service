@@ -132,7 +132,9 @@ spring:
         - id: ORDER-SERVICE
           uri: lb://ORDER-SERVICE
           predicates:
-            - Path=/order-service/actuator/**
+            - Path=/order-service/actuator/**,
+                   /order-service/orders/approve/**
+            - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/order-service/(?<segment>.*), /${segment}
             - NonAuthFilter
