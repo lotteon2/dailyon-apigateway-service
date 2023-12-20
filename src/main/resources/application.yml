@@ -76,7 +76,6 @@ spring:
           uri: lb://REVIEW-SERVICE
           predicates:
             - Path=/review-service/reviews/{variable:.*},
-              /review-service/reviews,
               /review-service/actuator/**
             - Method=GET, OPTIONS, HEAD
           filters:
@@ -87,7 +86,8 @@ spring:
         - id: REVIEW-SERVICE
           uri: lb://REVIEW-SERVICE
           predicates:
-            - Path=/review-service/reviews/**
+            - Path=/review-service/reviews/**,
+                   /review-service/reviews
           filters:
             - RewritePath=/review-service/(?<segment>.*), /${segment}
             - AuthFilter
