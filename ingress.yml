@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apigateway-service
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/load-balancer-name: dailyon-alb
+    alb.ingress.kubernetes.io/certificate-arn: ${AWS_CERTIFICATE_ARN}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    external-dns.alpha.kubernetes.io/hostname: ${HOSTNAME}
+  namespace: prod
+spec:
+  ingressClassName: alb
+  rules:
+    - host: ${HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: apigateway-service
+                port:
+                  number: 8000
