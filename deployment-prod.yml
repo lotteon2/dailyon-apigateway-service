@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: apigateway-deployment-${IMAGE_TAG}
+  name: apigateway-deployment
   namespace: prod
   labels:
     app: apigateway-service
