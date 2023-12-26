@@ -4,7 +4,7 @@ export ECR_REGISTRY=${ECR_REGISTRY}
 export AWS_ECR_REPOSITORY=${AWS_ECR_REPOSITORY}
 export IMAGE_TAG=${IMAGE_TAG}
 
-deployment_name="apigateway-service"
+deployment_name="apigateway-deployment"
 service_name="apigateway-service"
 ingress_name="apigateway-service"
 namespace="prod"
