@@ -1,4 +1,4 @@
-name: Deploy development profile about lotdiz
+name: Deploy development profile about dailyon
 on:
   workflow_dispatch:
   push:
@@ -14,6 +14,8 @@ env:
   AWS_ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY }}
   IMAGE_TAG: ${{ github.sha }}
   AWS_EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
+  HOSTNAME: ${{ secrets.HOSTNAME }}
+  AWS_CERTIFICATE_ARN: ${{ secrets.AWS_CERTIFICATE_ARN }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,6 +37,8 @@ jobs:
           java-version: '11'
           distribution: 'corretto'
           cache: gradle
+      - name: Grant execute permission to gradlew
+        run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
@@ -51,6 +55,8 @@ jobs:
           java-version: '11'
           distribution: 'corretto'
           cache: gradle
+      - name: Grant execute permission to gradlew
+        run: chmod +x gradlew
       - name: Test with Gradle
         run: ./gradlew test
         shell: bash
@@ -67,6 +73,8 @@ jobs:
           java-version: '11'
           distribution: 'corretto'
           cache: gradle
+      - name: Grant execute permission to gradlew
+        run: chmod +x gradlew
       - name: build with Gradle without test
         run: ./gradlew build -x test
         shell: bash

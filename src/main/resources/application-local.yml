@@ -1,9 +1,28 @@
 spring:
+  main:
+    web-application-type: reactive
   config:
     activate:
       on-profile: local
     import: optional:configserver:http://127.0.0.1:8888
-  # rabbitmq settings
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Headers Access-Control-Allow-Credentials Access-Control-Expose-Headers
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allow-credentials: true
+            allowedHeaders: "*"
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - PATCH
+              - OPTIONS
+
   rabbitmq:
     host: 127.0.0.1
     port: 5672
