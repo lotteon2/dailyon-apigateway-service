@@ -236,6 +236,14 @@ spring:
           filters:
             - RewritePath=/promotion-service/(?<segment>.*), /${segment}
             - AuthFilter
+        # NonAuth
+        - id: SEARCH-SERVICE
+          uri: lb://SEARCH-SERVICE
+          predicates:
+            - Path=/search-service/actuator/**
+          filters:
+            - RewritePath=/search-service/(?<segment>.*), /${segment}
+            - NonAuthFilter
 
 management:
   endpoints:

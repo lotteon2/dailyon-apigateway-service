@@ -36,7 +36,8 @@ if [ $? -eq 0 ]; then
   fi
 
   if kubectl get ingress "${ingress_name}" -n "${namespace}" &> /dev/null; then
-      echo "Ingress is already available"
+    echo "Ingress is already available"
+    envsubst < ./ingress.yml | kubectl apply -f - -n ${namespace}
   else
     echo "Ingress is not founded"
     echo "Create new ingress resource..."
