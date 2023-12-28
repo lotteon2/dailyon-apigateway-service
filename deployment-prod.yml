@@ -31,10 +31,10 @@ spec:
           resources:
             requests:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "125m"
             limits:
-              memory: "512Mi"
-              cpu: "1000m"
+              memory: "384Mi"
+              cpu: "250m"
           ports:
             - containerPort: 8000
           imagePullPolicy: IfNotPresent
@@ -43,7 +43,7 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: 8000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 120
             periodSeconds: 30
             timeoutSeconds: 2
           # 애플리케이션이 정상 상태를 유지하고 있는지 지속해서 검사
@@ -51,11 +51,11 @@ spec:
             httpGet:
               path: /actuator/health/liveness
               port: 8000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 120
             periodSeconds: 30
             timeoutSeconds: 2
-      # SIGTERM을 받아도 바로 종료되지 않고 90초 뒤에 종료
-      terminationGracePeriodSeconds: 90
+      # SIGTERM을 받아도 바로 종료되지 않고 180초 뒤에 종료
+      terminationGracePeriodSeconds: 180
       restartPolicy: Always
       affinity:
         nodeAffinity:
