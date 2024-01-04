@@ -30,11 +30,11 @@ spec:
           image: ${ECR_REGISTRY}/${AWS_ECR_REPOSITORY}:${IMAGE_TAG}
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "125m"
-            limits:
               memory: "384Mi"
               cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "300m"
           ports:
             - containerPort: 8000
           imagePullPolicy: IfNotPresent
@@ -66,9 +66,9 @@ spec:
                   - key: type
                     operator: In
                     values:
-                      - App
+                      - Util
                   - key: size
                     operator: In
                     values:
-                      - Large
+                      - Small
                       - Medium
