@@ -33,3 +33,13 @@ spec:
                 name: zipkin-service
                 port:
                   number: 9411
+    - host: ${PROMETHEUS_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: prometheus-service
+                port:
+                  number: 9090
