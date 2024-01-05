@@ -43,3 +43,13 @@ spec:
                 name: prometheus-service
                 port:
                   number: 9090
+    - host: ${GRAFANA_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  number: 3000
