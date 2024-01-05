@@ -15,6 +15,7 @@ env:
   IMAGE_TAG: ${{ github.sha }}
   AWS_EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
   HOSTNAME: ${{ secrets.HOSTNAME }}
+  ZIPKIN_HOSTNAME: ${{ secrets.ZIPKIN_HOSTNAME }}
   AWS_CERTIFICATE_ARN: ${{ secrets.AWS_CERTIFICATE_ARN }}
 jobs:
   build:
