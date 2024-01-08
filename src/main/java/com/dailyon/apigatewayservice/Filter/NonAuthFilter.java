@@ -2,9 +2,11 @@ package com.dailyon.apigatewayservice.Filter;
 
 import com.dailyon.apigatewayservice.Util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,25 +44,31 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
+
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
             log.info("Auth Header={}", authorizationHeader);
 
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            try {
+                if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
-                String token = authorizationHeader.substring(7);
-                Claims claims = jwtUtil.parse(token);
+                    String token = authorizationHeader.substring(7);
+                    Claims claims = jwtUtil.parse(token);
 
-                log.info(String.valueOf(claims));
+                    if (isExpired(claims)) {
+                        return onError(response, HttpStatus.UNAUTHORIZED);
+                    }
+                    log.info("Successful JWT Token Validation");
 
-                if (isExpired(claims)) {
-                    return onError(response, HttpStatus.UNAUTHORIZED);
+                    jwtUtil.addJwtPayloadHeaders(request, claims);
+
+                    return chain.filter(exchange);
                 }
-                log.info("Successful JWT Token Validation");
-
-                jwtUtil.addJwtPayloadHeaders(request, claims);
-
-                return chain.filter(exchange);
+            }  catch (ExpiredJwtException e) {
+                return onError(response, HttpStatus.UNAUTHORIZED, "JWT Token Expired");
+            } catch (Exception e) {
+                log.error("Error while processing JWT Token", e);
+                return onError(response, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
             }
             return chain.filter(exchange);
         });
@@ -67,6 +76,13 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
 
     private boolean isExpired(Claims claims) {
         return claims.getExpiration().getTime() < System.currentTimeMillis();
+    }
+
+    private Mono<Void> onError(ServerHttpResponse response, HttpStatus status, String errorMessage) {
+        response.setStatusCode(status);
+        String errorBody = "{\"error\": \"" + errorMessage + "\"}";
+        DataBuffer buffer = response.bufferFactory().wrap(errorBody.getBytes(StandardCharsets.UTF_8));
+        return response.writeWith(Mono.just(buffer));
     }
 
     private Mono<Void> onError(ServerHttpResponse response, HttpStatus status) {
