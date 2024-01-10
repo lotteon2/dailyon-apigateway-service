@@ -110,6 +110,14 @@ spring:
             - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
             - AuthFilter
 
+        # ws routering
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE
+          predicates:
+            - Path=/auction-service/ws/**
+          filters:
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+
         # NonAuth
         - id: AUCTION-SERVICE
           uri: lb://AUCTION-SERVICE
