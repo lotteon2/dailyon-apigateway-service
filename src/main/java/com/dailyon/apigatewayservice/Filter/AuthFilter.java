@@ -41,13 +41,12 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-            log.info("AuthFilter start");
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-            log.info("Auth Header={}", authorizationHeader);
+
             try {
                 if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
@@ -57,7 +56,6 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     if (isExpired(claims)) {
                         return onError(response, HttpStatus.UNAUTHORIZED);
                     }
-                    log.info("Successful JWT Token Validation");
 
                     jwtUtil.addJwtPayloadHeaders(request, claims);
 
