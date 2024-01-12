@@ -8,7 +8,7 @@ spring:
   cloud:
     gateway:
       default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Headers Access-Control-Expose-Headers
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Headers Access-Control-Allow-Credentials Access-Control-Expose-Headers
       globalcors:
         corsConfigurations:
           '[/**]':
