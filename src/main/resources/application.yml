@@ -112,7 +112,7 @@ spring:
 
         # ws routering
         - id: AUCTION-SERVICE
-          uri: lb://AUCTION-SERVICE
+          uri: lb:ws://AUCTION-SERVICE
           predicates:
             - Path=/auction-service/ws/**
           filters:
