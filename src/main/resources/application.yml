@@ -112,11 +112,19 @@ spring:
 
         # ws routering
         - id: AUCTION-SERVICE
-          uri: lb://AUCTION-SERVICE
+          uri: lb:ws://AUCTION-SERVICE
           predicates:
             - Path=/auction-service/ws/**
           filters:
-            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+            - StripPrefix=1
+
+        # ws routering
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE/ws/**
+          predicates:
+            - Path=/auction-service/ws/**
+          filters:
+            - StripPrefix=1
 
         # NonAuth
         - id: AUCTION-SERVICE
