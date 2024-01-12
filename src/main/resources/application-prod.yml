@@ -22,6 +22,12 @@ spring:
               - DELETE
               - PATCH
               - OPTIONS
+          '[/ws/**]':
+            allowedOriginPatterns: "*"
+            allow-credentials: false
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
 
   # rabbitmq settings
   rabbitmq:
