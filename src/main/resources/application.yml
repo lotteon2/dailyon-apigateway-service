@@ -116,7 +116,7 @@ spring:
           predicates:
             - Path=/auction-service/ws/chat
           filters:
-            - StripPrefix=1
+            - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
 
         # NonAuth
         - id: AUCTION-SERVICE
