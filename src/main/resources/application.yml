@@ -117,14 +117,7 @@ spring:
             - Path=/auction-service/ws/**
           filters:
             - StripPrefix=1
-
-        # ws routering
-        - id: AUCTION-SERVICE
-          uri: lb://AUCTION-SERVICE/ws/**
-          predicates:
-            - Path=/auction-service/ws/**
-          filters:
-            - StripPrefix=1
+            - NonAuthFilter
 
         # NonAuth
         - id: AUCTION-SERVICE
