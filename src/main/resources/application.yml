@@ -117,6 +117,7 @@ spring:
             - Path=/auction-service/ws/chat
           filters:
             - StripPrefix=1
+          default-filters: []
 
         # NonAuth
         - id: AUCTION-SERVICE
@@ -258,3 +259,6 @@ management:
     web:
       exposure:
         include: health, info, refresh, busrefresh
+logging:
+  level:
+    root: DEBUG
