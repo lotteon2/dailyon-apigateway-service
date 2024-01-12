@@ -259,6 +259,3 @@ management:
     web:
       exposure:
         include: health, info, refresh, busrefresh
-logging:
-  level:
-    root: DEBUG
