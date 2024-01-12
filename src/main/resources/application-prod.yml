@@ -11,6 +11,12 @@ spring:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Headers Access-Control-Allow-Credentials Access-Control-Expose-Headers
       globalcors:
         corsConfigurations:
+          '[/auction-service/ws/**]':
+            allowedOriginPatterns: "*"
+            allow-credentials: false
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
           '[/**]':
             allowedOriginPatterns: "*"
             allow-credentials: true
@@ -22,12 +28,7 @@ spring:
               - DELETE
               - PATCH
               - OPTIONS
-          '[/ws/**]':
-            allowedOriginPatterns: "*"
-            allow-credentials: false
-            allowedHeaders: "*"
-            allowedMethods:
-              - GET
+
 
   # rabbitmq settings
   rabbitmq:
