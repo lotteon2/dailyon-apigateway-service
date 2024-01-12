@@ -40,7 +40,7 @@ spec:
             path: /
             backend:
               service:
-                name: prometheus-service
+                name: prometheus-operated
                 port:
                   number: 9090
     - host: ${GRAFANA_HOSTNAME}
@@ -50,6 +50,6 @@ spec:
             path: /
             backend:
               service:
-                name: grafana-service
+                name: prometheus-grafana
                 port:
-                  number: 3000
+                  number: 80
