@@ -114,9 +114,9 @@ spring:
         - id: AUCTION-SERVICE
           uri: lb:ws://AUCTION-SERVICE
           predicates:
-            - Path=/auction-service/ws/chat
+            - Path=/auction-service/ws/**
           filters:
-            - RewritePath=/wish-cart-service/(?<segment>.*), /${segment}
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
 
         # NonAuth
         - id: AUCTION-SERVICE
