@@ -9,7 +9,6 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: ${AWS_CERTIFICATE_ARN}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
-    external-dns.alpha.kubernetes.io/hostname: ${HOSTNAME}
   namespace: prod
 spec:
   ingressClassName: alb
@@ -24,3 +23,33 @@ spec:
                 name: apigateway-service
                 port:
                   number: 8000
+    - host: ${ZIPKIN_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: zipkin-service
+                port:
+                  number: 9411
+    - host: ${PROMETHEUS_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: prometheus-operated
+                port:
+                  number: 9090
+    - host: ${GRAFANA_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: prometheus-grafana
+                port:
+                  number: 80
