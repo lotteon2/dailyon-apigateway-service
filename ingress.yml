@@ -53,3 +53,23 @@ spec:
                 name: prometheus-grafana
                 port:
                   number: 80
+    - host: ${DISCOVERY_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: discovery-service
+                port:
+                  number: 8761
+    - host: ${KUBEOPS_HOSTNAME}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: kube-ops-view
+                port:
+                  number: 8080
