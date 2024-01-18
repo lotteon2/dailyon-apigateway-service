@@ -52,7 +52,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                 if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
                     String token = authorizationHeader.substring(7);
-                    Claims claims = jwtUtil.parse(token);
+                    Claims claims = jwtUtil.parse(token, false);
 
                     if (isExpired(claims)) {
                         return onError(response, HttpStatus.UNAUTHORIZED);

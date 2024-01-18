@@ -43,7 +43,9 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
 
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
+
             log.info("request : {}", request.getURI());
+
 
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
@@ -52,7 +54,7 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
                 if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 
                     String token = authorizationHeader.substring(7);
-                    Claims claims = jwtUtil.parse(token);
+                    Claims claims = jwtUtil.parse(token, false);
 
                     if (isExpired(claims)) {
                         return onError(response, HttpStatus.UNAUTHORIZED);

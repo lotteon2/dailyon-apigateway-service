@@ -16,14 +16,15 @@ public class JwtUtil {
 
   @Autowired private Environment environment;
 
-
   @Value("${secretKey}")
   private String key;
 
+  @Value("${chatSecretKey}")
+  private String chatKey;
 
-  public Claims parse(String jwt) {
+  public Claims parse(String jwt, boolean isChatRequest) {
     return Jwts.parser()
-        .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+        .setSigningKey(Keys.hmacShaKeyFor(isChatRequest ? chatKey.getBytes() : key.getBytes()))
         .parseClaimsJws(jwt)
         .getBody();
   }
@@ -44,15 +45,6 @@ public class JwtUtil {
         .header("Content-Type", "application/json;charset=UTF-8")
         .header("memberId", String.valueOf(memberId))
         .header("role", String.valueOf(userRole))
-        .build();
-  }
-
-  public void addJwtPayloadHeadersForNonAuthService(ServerHttpRequest request, Claims claims) {
-    Long memberId = (claims != null) ? getMemberId(claims) : null;
-    request
-        .mutate()
-        .header("Content-Type", "application/json;charset=UTF-8")
-        .header("memberId", String.valueOf(memberId) == null ? null : String.valueOf(memberId))
         .build();
   }
 }

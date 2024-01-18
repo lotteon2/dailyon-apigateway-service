@@ -63,7 +63,7 @@ spring:
             - NonAuthFilter
 
         ## Product Service
-        - id : PRODUCT-SERVICE
+        - id: PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/product-service/admin/**
@@ -87,7 +87,7 @@ spring:
           uri: lb://REVIEW-SERVICE
           predicates:
             - Path=/review-service/reviews/**,
-                   /review-service/reviews
+              /review-service/reviews
           filters:
             - RewritePath=/review-service/(?<segment>.*), /${segment}
             - AuthFilter
@@ -127,6 +127,23 @@ spring:
             - RewritePath=/auction-service/(?<segment>.*), /${segment}
             - NonAuthFilter
 
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE
+          predicates:
+            - Path=/auction-service/auctions/enter/**
+          filters:
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+            - AuthFilter # 채팅 입장 시 인증용 필터
+
+        ## Auction Service - bid
+        - id: AUCTION-SERVICE
+          uri: lb://AUCTION-SERVICE
+          predicates:
+            - Path=/auction-service/bids/**
+          filters:
+            - RewritePath=/auction-service/(?<segment>.*), /${segment}
+            - ChatAuthFilter # 입장 후 채팅 전용 토큰으로 인증하는 필터
+
         ## Auction Service
         - id: AUCTION-SERVICE
           uri: lb://AUCTION-SERVICE
@@ -141,7 +158,7 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/actuator/**,
-                   /order-service/orders/approve/**
+              /order-service/orders/approve/**
             - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/order-service/(?<segment>.*), /${segment}
@@ -161,7 +178,7 @@ spring:
           uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/payment-service/actuator/**,
-                   /payment-service/payments/approve/**
+              /payment-service/payments/approve/**
             - Method=GET, OPTIONS, HEAD
           filters:
             - RewritePath=/payment-service/(?<segment>.*), /${segment}
@@ -231,7 +248,7 @@ spring:
               /promotion-service/coupons,
               /promotion-service/raffles,
               /promotion-service/actuator/**
-            - Method=GET, OPTIONS, HEAD
+            - Method=GET, POST, OPTIONS, HEAD
           filters:
             - RewritePath=/promotion-service/(?<segment>.*), /${segment}
             - NonAuthFilter
