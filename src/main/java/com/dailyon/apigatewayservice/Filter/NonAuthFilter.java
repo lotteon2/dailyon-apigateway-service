@@ -44,6 +44,9 @@ public class NonAuthFilter extends AbstractGatewayFilterFactory<NonAuthFilter.Co
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
+            log.info("request : {}", request.getURI());
+
+
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
 

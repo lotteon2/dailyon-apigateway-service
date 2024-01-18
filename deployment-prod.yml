@@ -52,8 +52,8 @@ spec:
             initialDelaySeconds: 120
             periodSeconds: 30
             timeoutSeconds: 2
-      # SIGTERM을 받아도 바로 종료되지 않고 180초 뒤에 종료
-      terminationGracePeriodSeconds: 180
+      # SIGTERM을 받아도 바로 종료되지 않고 일정시간 뒤에 종료
+      terminationGracePeriodSeconds: 60
       restartPolicy: Always
       affinity:
         nodeAffinity:

@@ -43,6 +43,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
+            log.info("request : {}", request.getURI());
 
             HttpHeaders headers = request.getHeaders();
             String authorizationHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
