@@ -248,7 +248,7 @@ spring:
               /promotion-service/coupons,
               /promotion-service/raffles,
               /promotion-service/actuator/**
-            - Method=GET, OPTIONS, HEAD
+            - Method=GET, POST, OPTIONS, HEAD
           filters:
             - RewritePath=/promotion-service/(?<segment>.*), /${segment}
             - NonAuthFilter
